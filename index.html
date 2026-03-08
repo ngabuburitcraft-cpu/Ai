@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pak-Craft AI | God Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6366f1; --bg: #020617; --c: #0f172a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 10px; }
+        #chat-box { width: 100%; max-width: 500px; height: 92vh; background: var(--c); border-radius: 30px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        header { padding: 25px; background: rgba(255,255,255,0.02); display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .avatar { width: 45px; height: 45px; background: var(--p); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
+        #msgs { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .m { padding: 14px 18px; border-radius: 20px; max-width: 85%; font-size: 15px; line-height: 1.6; animation: slide 0.3s ease; }
+        @keyframes slide { from { opacity: 0; transform: translateY(10px); } }
+        .ai { background: rgba(255,255,255,0.05); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user { background: var(--p); align-self: flex-end; border-bottom-right-radius: 2px; font-weight: 600; }
+        .loader { display: none; padding: 10px 25px; color: #94a3b8; font-size: 12px; }
+        .input-area { padding: 20px; background: #020617; display: flex; gap: 10px; }
+        input { flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 15px; color: white; padding: 12px 20px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--p); }
+        button { background: var(--p); border: none; padding: 0 25px; border-radius: 15px; color: white; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        button:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+<div id="chat-box">
+    <header>
+        <div class="avatar">👨‍🔧</div>
+        <div>
+            <h2 style="font-size: 1.1rem; font-weight: 800;">Pak-Craft AI</h2>
+            <p style="font-size: 11px; color: #22c55e;">● God Mode Connection</p>
+        </div>
+    </header>
+    <div id="msgs">
+        <div class="m ai">Halo Boss! Saya **Pak-Craft**. Kali ini saya pakai sistem **God Mode**. Tidak butuh API Key OpenAI, dan lebih stabil dari versi sebelumnya. Apa yang bisa saya bantu?</div>
+    </div>
+    <div id="loading" class="loader">Pak-Craft sedang memproses...</div>
+    <div class="input-area">
+        <input type="text" id="in" placeholder="Ketik pesan..." autocomplete="off">
+        <button onclick="send()">KIRIM</button>
+    </div>
+</div>
+
+<script>
+    async function send() {
+        const input = document.getElementById('in');
+        const msgs = document.getElementById('msgs');
+        const load = document.getElementById('loading');
+        const txt = input.value.trim();
+        
+        if(!txt) return;
+
+        msgs.innerHTML += `<div class="m user">${txt}</div>`;
+        input.value = '';
+        load.style.display = 'block';
+        msgs.scrollTop = msgs.scrollHeight;
+
+        try {
+            // Menggunakan provider AI free-tier yang sangat stabil untuk regional Indonesia
+            const res = await fetch(`https://api.vyturex.com/ai?prompt=${encodeURIComponent(txt)}`);
+            const reply = await res.text();
+            
+            load.style.display = 'none';
+            msgs.innerHTML += `<div class="m ai">${reply.replace(/\n/g, '<br>')}</div>`;
+        } catch (e) {
+            // Backup jika server Vyturex sibuk
+            try {
+                const res2 = await fetch(`https://aivvm.com/api/chat?prompt=${encodeURIComponent(txt)}`);
+                const data2 = await res2.json();
+                load.style.display = 'none';
+                msgs.innerHTML += `<div class="m ai">${data2.response}</div>`;
+            } catch (err) {
+                load.style.display = 'none';
+                msgs.innerHTML += `<div class="m ai">❌ Jalur masih padat, Boss. Klik **KIRIM** sekali lagi, saya pasti balas!</div>`;
+            }
+        }
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    document.getElementById('in').addEventListener('keypress', (e) => { if(e.key === 'Enter') send(); });
+</script>
+
+</body>
+</html>
