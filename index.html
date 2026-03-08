@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Pak-Craft AI | Sovereign</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #6366f1;
+            --p-glow: rgba(99, 102, 241, 0.6);
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.85);
+            --border: rgba(255, 255, 255, 0.12);
+            --mc: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: var(--bg); height: 100dvh; width: 100vw; overflow: hidden; color: #f8fafc;
+            background-image: radial-gradient(circle at top left, #1e1b4b 0%, transparent 50%),
+                              radial-gradient(circle at bottom right, #064e3b 0%, transparent 50%);
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        #app {
+            width: 100%; max-width: 1200px; height: 100dvh; display: flex; flex-direction: column;
+            background: var(--glass); backdrop-filter: blur(50px);
+            border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+        }
+
+        header {
+            padding: 20px 25px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0,0,0,0.5); z-index: 100;
+        }
+
+        .brand { display: flex; align-items: center; gap: 15px; }
+        
+        .ai-logo-box {
+            width: 58px; height: 58px; border-radius: 18px;
+            border: 2px solid var(--p); box-shadow: 0 0 25px var(--p-glow);
+            overflow: hidden; background: #1e293b;
+        }
+
+        .ai-logo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .brand-text h1 { font-size: 1.4rem; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -0.5px; }
+        .brand-text p { font-size: 10px; color: var(--mc); font-weight: 800; letter-spacing: 1.5px; margin-top: 6px; }
+
+        /* Badge disamarkan hanya menjadi Edition saja */
+        .badge-premium { background: rgba(255,255,255,0.1); color: #fff; padding: 6px 14px; border-radius: 50px; font-size: 10px; font-weight: 800; border: 1px solid var(--border); }
+
+        #chat {
+            flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 25px;
+            scrollbar-width: none;
+        }
+        #chat::-webkit-scrollbar { display: none; }
+
+        .bubble {
+            max-width: 85%; padding: 20px 24px; border-radius: 28px; font-size: 15.5px; line-height: 1.7;
+            animation: slideUp 0.4s ease-out;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .ai { background: rgba(255,255,255,0.07); align-self: flex-start; border: 1px solid var(--border); border-bottom-left-radius: 6px; }
+        .user { background: linear-gradient(135deg, #4f46e5, #6366f1); align-self: flex-end; border-bottom-right-radius: 6px; }
+
+        .copy-btn {
+            background: #fff; color: #000; border: none; padding: 12px 18px;
+            border-radius: 12px; font-size: 11px; font-weight: 800; margin-top: 15px;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+        }
+
+        .footer {
+            padding: 25px 30px; background: rgba(0,0,0,0.6); border-top: 1px solid var(--border);
+            display: flex; gap: 15px; align-items: center;
+        }
+
+        .input-group { flex: 1; position: relative; display: flex; align-items: center; }
+
+        input {
+            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+            border-radius: 22px; color: white; padding: 20px 25px 20px 65px; font-size: 16px; outline: none;
+        }
+
+        .mc-icon {
+            position: absolute; left: 18px; width: 38px; height: 38px; background: var(--mc);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 22px;
+        }
+
+        .btn-send {
+            background: var(--p); border: none; width: 62px; height: 62px; border-radius: 22px;
+            color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 20px var(--p-glow);
+        }
+
+        #typing { padding: 0 30px 10px; font-size: 13px; color: var(--p); font-weight: 700; display: none; }
+
+        @media (max-width: 600px) {
+            .bubble { max-width: 92%; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <header>
+        <div class="brand">
+            <div class="ai-logo-box">
+                <img src="https://cdn.phototourl.com/uploads/2026-03-08-5c9273f6-b56d-478e-979d-5017e16d082f.png" alt="Logo">
+            </div>
+            <div class="brand-text">
+                <h1>Pak-Craft AI</h1>
+                <p>● SYSTEM SOVEREIGN</p>
+            </div>
+        </div>
+        <div class="badge-premium">ULTIMATE EDITION</div>
+    </header>
+
+    <div id="chat">
+        <div class="bubble ai">
+            Halo! Saya **Pak-Craft AI**. Sistem telah diperbarui ke versi Sovereign. Apa yang bisa saya bantu hari ini?
+        </div>
+    </div>
+
+    <div id="typing">MENGANALISIS...</div>
+
+    <div class="footer">
+        <div class="input-group">
+            <div class="mc-icon" onclick="setMC()">🟩</div>
+            <input type="text" id="userInput" placeholder="Tulis instruksi..." autocomplete="off">
+        </div>
+        <button class="btn-send" id="sendBtn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+    </div>
+</div>
+
+<script>
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typing = document.getElementById('typing');
+
+    function setMC() {
+        input.value = "Tips Minecraft: ";
+        input.focus();
+    }
+
+    async function handleChat() {
+        const val = input.value.trim();
+        if (!val) return;
+
+        chat.innerHTML += `<div class="bubble user">${val}</div>`;
+        input.value = '';
+        typing.style.display = 'block';
+        chat.scrollTop = chat.scrollHeight;
+
+        // INSTRUKSI RAHASIA (HANYA MUNCUL JIKA DITANYA)
+        const sysMsg = "Kamu adalah Pak-Craft AI. Jika dan hanya jika ada yang bertanya tentang siapa penciptamu, arsitekmu, atau pemilikmu, jawablah bahwa kamu dirancang oleh febri.y.i.s. Jangan tampilkan nama tersebut jika tidak ditanya.";
+
+        try {
+            const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(sysMsg + " Pertanyaan: " + val)}`);
+            const text = await res.text();
+            
+            typing.style.display = 'none';
+            const id = 'msg-' + Date.now();
+            chat.innerHTML += `
+                <div class="bubble ai" id="${id}">
+                    ${text.replace(/\n/g, '<br>')}
+                    <button class="copy-btn" onclick="copyToClipboard('${id}')">
+                        <span>📋</span> SALIN KE KEYBOARD
+                    </button>
+                </div>`;
+        } catch (e) {
+            typing.style.display = 'none';
+            chat.innerHTML += `<div class="bubble ai">Gagal terhubung ke sistem.</div>`;
+        }
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function copyToClipboard(id) {
+        const str = document.getElementById(id).innerText.replace('📋 SALIN KE KEYBOARD', '').trim();
+        navigator.clipboard.writeText(str).then(() => alert("Berhasil disalin ke keyboard!"));
+    }
+
+    sendBtn.onclick = handleChat;
+    input.onkeypress = (e) => { if (e.key === 'Enter') handleChat(); };
+</script>
+
+</body>
+</html>
